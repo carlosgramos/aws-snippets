@@ -10,8 +10,11 @@ def lambda_handler(event, context):
     logger.info('got event{}'.format(event))
     #TO DO
 
+    response = None
+    err = None
+
     try:
-        #TO DO 
+        #TO DO
 
     except Exception as e:
         #TO DO
