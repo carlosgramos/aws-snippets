@@ -1,0 +1,11 @@
+---
+swagger: "2.0"
+info:
+  version: "2019-06-26T19:53:47Z"
+  title: "Your Title"
+host: "Your Host"
+basePath: "/dev"
+schemes:
+- "https"
+paths:
+  /the-path:

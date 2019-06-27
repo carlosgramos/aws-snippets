@@ -1,0 +1,91 @@
+# [(c) or copyright] 2019 Amazon Web Services, Inc. All Rights Reserved. This AWS Content is subject to the terms of the Basic Ordering Agreement Contract No. [2018-17120800001/Order No. ABC123 or Agency-specific contract number]
+AWSTemplateFormatVersion:  2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Description:  >-
+  This template deploys the Lambda functions and API Gateway
+  
+Parameters:
+  pParameter1:
+    Description: Param Description
+    Type: Stringp
+    
+  Parameter2:
+    Description: Param Description
+    Type: String
+
+
+Resources:
+  #IAM Roles
+  rLambdaRole1:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: LambdaPolicyName
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - serviceName:*
+            Resource: !Ref pResourceArn
+    
+    #Lambda Layer Versions
+    rLambdaLayer1:
+			Type: AWS::Serverless::LayerVersion
+  		Properties:
+    		LayerName: MyLayer
+    		Description: Layer description
+    		ContentUri: 's3://my-bucket/my-layer.zip'
+    		CompatibleRuntimes:
+      		- python3.6
+      		- python3.7
+    		LicenseInfo: 'Available under the MIT-0 license.'
+    		RetentionPolicy: Retain
+
+    
+    #Lambda Functions
+    rFunction1:
+    	Type: 'AWS::Serverless::Function'
+      Properties:
+      Description: >-
+          Describe the function
+      Handler: lambda_function.lambda_handler
+      MemorySize: 128
+      Role: !GetAtt rLambdaRole.Arn
+      Runtime: python3.6
+      CodeUri:  ./src
+      Environment:
+        Variables:
+          VAR_1: !Ref pParameter1
+          VAR_2: !Ref pPrameter2
+      Timeout: 10
+      Layers:   
+        - !Ref Layer
+      Events:
+        ApiName:
+          Type: Api
+          Properties:
+            Path: /path-to-api
+            Method: METHOD NAME
+            RestApiId: 
+              Ref: rBackendApi
+      Tags:
+        Name: !Sub '${pEnvironmentTag}-name-of-lambda'  
+        
+Outputs:
+  oStackName:
+    Description: This is the stack name.
+    Value: !Ref 'AWS::StackName'
+    Export:
+      Name: !Sub '${AWS::StackName}-oStackName'
